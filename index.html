@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CFD – Centrum Formacji Duchowej | Dom Słowa</title>
+    <meta name="description" content="CFD - Centrum Formacji Duchowej (Dom Słowa) Salvatorianie. Rekolekcje, kalendarz wydarzeń, Słowo na Jutro i nagrania.">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="topbar">
+        <div class="brand">
+          <span class="logo">CFD</span>
+          <span class="brand-sub">Centrum Formacji Duchowej</span>
+        </div>
+        <button class="nav-toggle" aria-controls="main-nav" aria-expanded="false" aria-label="Otwórz menu" title="Menu">
+          <span class="bar" aria-hidden="true"></span>
+          <span class="bar" aria-hidden="true"></span>
+          <span class="bar" aria-hidden="true"></span>
+        </button>
+        <ul id="main-nav" class="nav-menu" data-nav>
+          <li><a href="#dom-slowa">Dom Słowa</a></li>
+          <li><a href="#kalendarz">Kalendarz</a></li>
+          <li><a href="#prowadzacy">Prowadzący</a></li>
+          <li><a href="#slowo-na-jutro">Słowo na Jutro</a></li>
+          <li><a href="#pobieranie">Pobierz nagrania</a></li>
+        </ul>
+      </nav>
+      <div class="hero-content">
+        <h1>CFD – Dom Słowa</h1>
+        <p>Przestrzeń ciszy, pustyni i pokoju, aby słuchać Słowa Bożego.</p>
+        <blockquote>„Twoje słowo jest lampą dla moich stóp i światłem na mojej ścieżce.” (Ps 119,105)</blockquote>
+      </div>
+    </header>
+
+    <main>
+      <section id="dom-slowa" class="section">
+        <div class="container">
+          <h2>Dom Słowa</h2>
+          <p>
+            Centrum Formacji Duchowej jest katolickim apostolatem <strong>Salwatorianów</strong>.
+            Dom Słowa to miejsce rekolekcji, modlitwy i towarzyszenia duchowego.
+            Zapraszamy, aby wejść w rytm ciszy, pustyni i słuchania Słowa Bożego.
+          </p>
+        </div>
+      </section>
+
+      <section id="kalendarz" class="section alt">
+        <div class="container">
+          <h2>Kalendarz wydarzeń</h2>
+          <ul id="events-list" class="cards"></ul>
+        </div>
+      </section>
+
+      <section id="prowadzacy" class="section">
+        <div class="container">
+          <h2>Prowadzący rekolekcje</h2>
+          <div id="directors-list" class="grid"></div>
+        </div>
+      </section>
+
+      <section id="slowo-na-jutro" class="section alt">
+        <div class="container">
+          <h2>Słowo na Jutro</h2>
+          <p>
+            Codzienna refleksja nad Ewangelią dostępna jest na naszym kanale YouTube.
+          </p>
+          <a id="snj-link" class="btn" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=S%C5%82owo+na+Jutro">Otwórz kanał YouTube</a>
+        </div>
+      </section>
+
+      <section id="pobieranie" class="section">
+        <div class="container">
+          <h2>Pobierz nagrania z rekolekcji</h2>
+          <p>Wpisz otrzymany kod, aby pobrać paczkę nagrań audio.</p>
+          <form id="download-form" class="download-form">
+            <input type="text" id="entry-code" name="entryCode" placeholder="Wpisz kod dostępu" required pattern="[A-Za-z0-9-]{4,}" />
+            <button type="submit" class="btn">Pobierz</button>
+            <span id="download-message" class="message" aria-live="polite"></span>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>© <span id="year"></span> CFD – Centrum Formacji Duchowej (Salwatorianie). Wszelkie prawa zastrzeżone.</p>
+      </div>
+    </footer>
+
+    <script src="app.js" defer></script>
+  </body>
+  </html>
