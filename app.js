@@ -38,8 +38,11 @@ function renderDirectors(list){
     const div = document.createElement('div');
     div.className = 'person';
     const initials = (p.name || 'CFD').split(' ').map(s=>s[0]).slice(0,2).join('');
+    const avatar = p.photo
+      ? `<img class="avatar avatar-img" src="${p.photo}" alt="${p.name}" loading="lazy" />`
+      : `<div class=\"avatar\" aria-hidden=\"true\">${initials}</div>`;
     div.innerHTML = `
-      <div class="avatar" aria-hidden="true">${initials}</div>
+      ${avatar}
       <div>
         <h4>${p.name}</h4>
         ${p.role ? `<p>${p.role}</p>`:''}

@@ -1,5 +1,5 @@
 [
-  { "name": "o. Jan Kowalski SDS", "role": "rekolekcjonista" },
-  { "name": "s. Marta Nowak SDS", "role": "animatorka modlitwy" },
-  { "name": "br. Piotr Zieliński SDS", "role": "muzyka i liturgia" }
+  { "name": "ks. Krzysztof Wons SDS", "role": "dyrektor CFD", "photo": "assets/team/krzysztof-wons.png" },
+  { "name": "ks. Joachim Stencel SDS", "role": "kierownik duchowy", "photo": "assets/team/joachim-stencel.png" },
+  { "name": "ks. Ryszard Stankiewicz SDS", "role": "spowiednik", "photo": "assets/team/ryszard-stankiewicz.png" }
 ]
