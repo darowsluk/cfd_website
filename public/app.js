@@ -1,0 +1,129 @@
+async function fetchJSON(url){
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('Błąd pobierania');
+  return res.json();
+}
+
+function renderEvents(list){
+  const ul = document.getElementById('events-list');
+  ul.innerHTML = '';
+  if(!list || list.length === 0){
+    ul.innerHTML = '<li>Wkrótce opublikujemy nowe terminy.</li>';
+    return;
+  }
+  list.forEach(ev => {
+    const li = document.createElement('li');
+    li.className = 'card';
+    const when = new Date(ev.dateStart).toLocaleDateString('pl-PL', {day:'2-digit', month:'short', year:'numeric'});
+    const badge = ev.type ? `<span class="badge">${ev.type}</span>` : '';
+    li.innerHTML = `
+      ${badge}
+      <h3>${ev.title}</h3>
+      <p><strong>${when}</strong>${ev.dateEnd ? ` – ${new Date(ev.dateEnd).toLocaleDateString('pl-PL',{day:'2-digit',month:'short'})}`:''}</p>
+      ${ev.place ? `<p>Miejsce: ${ev.place}</p>`:''}
+      ${ev.link ? `<p><a class="btn" target="_blank" rel="noopener" href="${ev.link}">Szczegóły i zapisy</a></p>`:''}
+    `;
+    ul.appendChild(li);
+  });
+}
+
+function renderDirectors(list){
+  const box = document.getElementById('directors-list');
+  box.innerHTML = '';
+  if(!list || list.length === 0){
+    box.innerHTML = '<p>Lista w przygotowaniu.</p>';
+    return;
+  }
+  list.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'person';
+    const initials = (p.name || 'CFD').split(' ').map(s=>s[0]).slice(0,2).join('');
+    div.innerHTML = `
+      <div class="avatar" aria-hidden="true">${initials}</div>
+      <div>
+        <h4>${p.name}</h4>
+        ${p.role ? `<p>${p.role}</p>`:''}
+      </div>
+    `;
+    box.appendChild(div);
+  });
+}
+
+async function init(){
+  document.getElementById('year').textContent = new Date().getFullYear();
+  // Mobile nav
+  const toggle = document.querySelector('.nav-toggle');
+  const menu = document.getElementById('main-nav');
+  if(toggle && menu){
+    const setOpen = (open)=>{
+      toggle.setAttribute('aria-expanded', String(open));
+      menu.classList.toggle('open', open);
+    };
+    toggle.addEventListener('click', ()=>{
+      const open = toggle.getAttribute('aria-expanded') !== 'true';
+      setOpen(open);
+    });
+    menu.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>setOpen(false)));
+    document.addEventListener('click', (e)=>{
+      if(!menu.contains(e.target) && !toggle.contains(e.target)) setOpen(false);
+    });
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape') setOpen(false);
+    });
+  }
+  // Determine if backend API exists; if not, use static JSON files
+  const hasBackend = await fetch('/api/health').then(r=>r.ok).catch(()=>false);
+  try{
+    const [events, directors] = await Promise.all([
+      hasBackend ? fetchJSON('/api/events') : fetchJSON('data/events.json'),
+      hasBackend ? fetchJSON('/api/directors') : fetchJSON('data/directors.json')
+    ]);
+    renderEvents(events);
+    renderDirectors(directors);
+  }catch(e){
+    console.error(e);
+  }
+
+  const form = document.getElementById('download-form');
+  const input = document.getElementById('entry-code');
+  const msg = document.getElementById('download-message');
+  // Hide or disable download form if no backend
+  const hasBackendForDownload = await fetch('/api/health').then(r=>r.ok).catch(()=>false);
+  if(!hasBackendForDownload){
+    form.style.display = 'none';
+  }
+  form.addEventListener('submit', async (ev)=>{
+    ev.preventDefault();
+    msg.textContent = 'Przygotowujemy archiwum…';
+    const code = input.value.trim();
+    if(!code){ msg.textContent = 'Podaj kod.'; return; }
+    try{
+      const res = await fetch('/api/download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      if(!res.ok){
+        const data = await res.json().catch(()=>({error:'Błąd pobierania.'}));
+        msg.textContent = data.error || 'Niepowodzenie.';
+        return;
+      }
+      // Odbierz blob ZIP i pobierz
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'rekolekcje.zip';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      msg.textContent = 'Pobieranie rozpoczęte.';
+    }catch(err){
+      console.error(err);
+      msg.textContent = 'Wystąpił błąd sieci.';
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', init);

@@ -1,0 +1,23 @@
+{
+  "name": "cfd-centrum-formacji-duchowej",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CFD - Centrum Formacji Duchowej (Dom Słowa) — strona informacyjna z kalendarzem, prowadzącymi i pobieraniem nagrań",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": ["CFD", "Centrum Formacji Duchowej", "Dom Słowa", "rekolekcje", "katolickie"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "compression": "^1.7.4",
+    "express": "^4.19.2",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
