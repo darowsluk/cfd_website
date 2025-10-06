@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Rekolekcje Lectio Divina – Ewangelia wg św. Marka",
+    "dateStart": "2025-11-14",
+    "dateEnd": "2025-11-17",
+    "type": "rekolekcje",
+    "place": "Dom Słowa",
+    "link": "https://example.org/rekolekcje-marka"
+  },
+  {
+    "title": "Weekend ciszy i pustyni",
+    "dateStart": "2025-12-05",
+    "dateEnd": "2025-12-07",
+    "type": "weekend",
+    "place": "Dom Słowa"
+  }
+]

@@ -72,11 +72,12 @@ async function init(){
     });
   }
   // Determine if backend API exists; if not, use static JSON files
-  const hasBackend = await fetch('/api/health').then(r=>r.ok).catch(()=>false);
+  // Prefer relative URLs for GitHub Pages subpaths
+  const hasBackend = await fetch('./api/health').then(r=>r.ok).catch(()=>false);
   try{
     const [events, directors] = await Promise.all([
-      hasBackend ? fetchJSON('/api/events') : fetchJSON('data/events.json'),
-      hasBackend ? fetchJSON('/api/directors') : fetchJSON('data/directors.json')
+      hasBackend ? fetchJSON('./api/events') : fetchJSON('data/events.json'),
+      hasBackend ? fetchJSON('./api/directors') : fetchJSON('data/directors.json')
     ]);
     renderEvents(events);
     renderDirectors(directors);
@@ -88,7 +89,7 @@ async function init(){
   const input = document.getElementById('entry-code');
   const msg = document.getElementById('download-message');
   // Hide or disable download form if no backend
-  const hasBackendForDownload = await fetch('/api/health').then(r=>r.ok).catch(()=>false);
+  const hasBackendForDownload = await fetch('./api/health').then(r=>r.ok).catch(()=>false);
   if(!hasBackendForDownload){
     form.style.display = 'none';
   }
