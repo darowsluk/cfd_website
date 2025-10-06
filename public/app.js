@@ -148,14 +148,14 @@ async function init(){
     }
   });
 
-  if(!hasBackendForDownload){
-    // Dodaj delikatną notkę informacyjną pod formularzem
-    const note = document.createElement('p');
-    note.className = 'message';
-    note.style.marginTop = '.4rem';
-    note.textContent = 'To jest wersja demonstracyjna na GitHub Pages – pobierzesz przykładowy plik default.mp3.';
-    form.appendChild(note);
-  }
+//   if(!hasBackendForDownload){
+//     // Dodaj delikatną notkę informacyjną pod formularzem
+//     const note = document.createElement('p');
+//     note.className = 'message';
+//     note.style.marginTop = '.4rem';
+//     note.textContent = 'To jest wersja demonstracyjna na GitHub Pages – pobierzesz przykładowy plik default.mp3.';
+//     form.appendChild(note);
+//   }
 }
 
 document.addEventListener('DOMContentLoaded', init);
