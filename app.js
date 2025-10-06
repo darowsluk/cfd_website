@@ -1,5 +1,5 @@
 async function fetchJSON(url){
-  const res = await fetch(url);
+  const res = await fetch(url, { cache: 'no-store' });
   if(!res.ok) throw new Error('Błąd pobierania');
   return res.json();
 }
@@ -73,25 +73,44 @@ async function init(){
   }
   // Determine if backend API exists; if not, use static JSON files
   // Prefer relative URLs for GitHub Pages subpaths
-  const hasBackend = await fetch('./api/health').then(r=>r.ok).catch(()=>false);
+  const hasBackend = await fetch('./api/health', { cache: 'no-store' }).then(r=>r.ok).catch(()=>false);
   try{
     const [events, directors] = await Promise.all([
-      hasBackend ? fetchJSON('./api/events') : fetchJSON('data/events.json'),
-      hasBackend ? fetchJSON('./api/directors') : fetchJSON('data/directors.json')
+      hasBackend ? fetchJSON('./api/events') : fetchJSON('./data/events.json'),
+      hasBackend ? fetchJSON('./api/directors') : fetchJSON('./data/directors.json')
     ]);
     renderEvents(events);
     renderDirectors(directors);
   }catch(e){
-    console.error(e);
+    console.error('Błąd ładowania danych wydarzeń/prowadzących:', e);
+    // Opcjonalna informacja dla użytkownika (bez psucia layoutu)
+    const ul = document.getElementById('events-list');
+    if(ul && ul.children.length === 0){
+      const li = document.createElement('li');
+      li.textContent = 'Nie udało się załadować danych kalendarza.';
+      ul.appendChild(li);
+    }
+    const box = document.getElementById('directors-list');
+    if(box && box.children.length === 0){
+      const p = document.createElement('p');
+      p.textContent = 'Nie udało się załadować listy prowadzących.';
+      box.appendChild(p);
+    }
   }
 
   const form = document.getElementById('download-form');
   const input = document.getElementById('entry-code');
   const msg = document.getElementById('download-message');
   // Hide or disable download form if no backend
-  const hasBackendForDownload = await fetch('./api/health').then(r=>r.ok).catch(()=>false);
+  const hasBackendForDownload = await fetch('./api/health', { cache: 'no-store' }).then(r=>r.ok).catch(()=>false);
   if(!hasBackendForDownload){
-    form.style.display = 'none';
+    // Pokaż informację zamiast formularza na GitHub Pages
+    const container = form.parentElement;
+    const info = document.createElement('div');
+    info.className = 'card';
+    info.style.marginTop = '.5rem';
+    info.innerHTML = '<p><strong>Pobieranie nagrań</strong> wymaga wersji serwerowej strony. Ta wersja (GitHub Pages) nie obsługuje kodów dostępu. Skontaktuj się z CFD, aby uzyskać dostęp.</p>';
+    container.replaceChild(info, form);
   }
   form.addEventListener('submit', async (ev)=>{
     ev.preventDefault();
