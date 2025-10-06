@@ -104,23 +104,24 @@ async function init(){
   const form = document.getElementById('download-form');
   const input = document.getElementById('entry-code');
   const msg = document.getElementById('download-message');
-  // Hide or disable download form if no backend
   const hasBackendForDownload = await fetch('./api/health', { cache: 'no-store' }).then(r=>r.ok).catch(()=>false);
-  if(!hasBackendForDownload){
-    // Pokaż informację zamiast formularza na GitHub Pages
-    const container = form.parentElement;
-    const info = document.createElement('div');
-    info.className = 'card';
-    info.style.marginTop = '.5rem';
-    info.innerHTML = '<p><strong>Pobieranie nagrań</strong> wymaga wersji serwerowej strony. Ta wersja (GitHub Pages) nie obsługuje kodów dostępu. Skontaktuj się z CFD, aby uzyskać dostęp.</p>';
-    container.replaceChild(info, form);
-  }
   form.addEventListener('submit', async (ev)=>{
     ev.preventDefault();
-    msg.textContent = 'Przygotowujemy archiwum…';
+    msg.textContent = hasBackendForDownload ? 'Przygotowujemy archiwum…' : 'Przygotowujemy plik demonstracyjny…';
     const code = input.value.trim();
     if(!code){ msg.textContent = 'Podaj kod.'; return; }
     try{
+      if(!hasBackendForDownload){
+        // Mock: na GitHub Pages pobieramy statyczny plik demo
+        const a = document.createElement('a');
+        a.href = './downloads/default.mp3';
+        a.download = 'rekolekcje-default.mp3';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        msg.textContent = 'Pobieranie pliku demonstracyjnego rozpoczęte.';
+        return;
+      }
       const res = await fetch('/api/download', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -131,7 +132,6 @@ async function init(){
         msg.textContent = data.error || 'Niepowodzenie.';
         return;
       }
-      // Odbierz blob ZIP i pobierz
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -147,6 +147,15 @@ async function init(){
       msg.textContent = 'Wystąpił błąd sieci.';
     }
   });
+
+  if(!hasBackendForDownload){
+    // Dodaj delikatną notkę informacyjną pod formularzem
+    const note = document.createElement('p');
+    note.className = 'message';
+    note.style.marginTop = '.4rem';
+    note.textContent = 'To jest wersja demonstracyjna na GitHub Pages – pobierzesz przykładowy plik default.mp3.';
+    form.appendChild(note);
+  }
 }
 
 document.addEventListener('DOMContentLoaded', init);
